@@ -21,7 +21,6 @@ import java.util.List;
 
 enum SortOrder { DATE, SUM }
 
-
 public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_CODE_SEND = 3443;
