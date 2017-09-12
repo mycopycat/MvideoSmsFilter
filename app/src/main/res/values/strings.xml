@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">M.Video Saver</string>
+    <string name="btn_save">Сохранить</string>
+    <string name="et_address">Номер собеседника:</string>
+    <string name="et_filter">Текст сообщения (RegEx):</string>
+    <string name="hint_any">Любой</string>
+    <string name="rb_all">Все</string>
+    <string name="rb_inbox">Входящие</string>
+    <string name="rb_output">Исходящие</string>
+    <string name="status_ok">Сообщения успешно сохранены.</string>
+    <string name="status_io_error">Не удалось сохранить сообщения в памяти телефона.</string>
+    <string name="status_empty">Сообщения не найдены</string>
+    <string name="status_sent">Сообщения успешно отправлены</string>
+</resources>
