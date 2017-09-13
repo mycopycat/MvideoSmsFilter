@@ -11,4 +11,6 @@
     <string name="status_io_error">Не удалось сохранить сообщения в памяти телефона.</string>
     <string name="status_empty">Сообщения не найдены</string>
     <string name="status_sent">Сообщения успешно отправлены</string>
+    <string name="permission_error_sms">Нет прав на чтение смс. Попробуйте еще раз.</string>
+
 </resources>

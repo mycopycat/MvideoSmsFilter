@@ -1,10 +1,14 @@
 package com.liarstudio.mvideosmsfilter;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.IdRes;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +26,8 @@ import java.util.List;
 enum SortOrder { DATE, SUM }
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int PERMISSION_REQUEST_READ_CONTACTS = 100;
 
     static final int REQUEST_CODE_SEND = 3443;
 
@@ -129,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (innerAction == ButtonAction.SAVE)
+            if (innerAction == ButtonAction.SAVE || messages.isEmpty())
                 toggleStatus(statusMessage);
         }
 
@@ -182,12 +188,20 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            if ( parse() ) {
-                if (innerAction == ButtonAction.SAVE) {
-                    saveToFile();
-                } else {
-                    sendEmail();
+            int permissionCheck = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_SMS);
+
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                if (parse()) {
+                    if (innerAction == ButtonAction.SAVE) {
+                        saveToFile();
+                    } else {
+                        sendEmail();
+                    }
                 }
+            } else {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_SMS},
+                        PERMISSION_REQUEST_READ_CONTACTS);
+                statusMessage = getResources().getString(R.string.permission_error_sms);
             }
             return null;
         }
