@@ -24,11 +24,12 @@ import java.io.IOException;
 import java.util.List;
 
 enum SortOrder { DATE, SUM }
-enum Shop {MVIDEO, ELDORADO}
+enum Shop { MVIDEO, ELDORADO }
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int PERMISSION_REQUEST_READ_CONTACTS = 100;
+    private static final int PERMISSION_REQUEST_READ_SMS = 100;
+    private static final int PERMISSION_REQUEST_WRITE_STORAGE = 100;
 
     static final int REQUEST_CODE_SEND = 3443;
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     SortOrder sortOrder;
     Shop shop;
 
-    String fileName = "filtered.txt";
+    String fileName = "mvideo.txt";
     ButtonAction outerAction;
 
     @Override
@@ -121,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
                     default:
                         shop = Shop.MVIDEO;
                         break;
-
                 }
             }
         });
@@ -175,10 +175,17 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         void saveToFile() {
+            int permissionCheck = ContextCompat.checkSelfPermission(MainActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-                File dir = new File(Environment.getExternalStorageDirectory(), "MVideo");
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+
+                File dir = new File(Environment.getExternalStorageDirectory(), "Coupons");
                 if (!dir.exists())
                     dir.mkdirs();
+                fileName = shop == Shop.ELDORADO ?
+                     "eldorado.txt" :
+                     "mvideo.txt";
                 File file = new File(dir, fileName);
 
                 try {
@@ -193,7 +200,13 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                     statusMessage = getResources().getString(R.string.status_io_error);
                 }
+            } else {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_WRITE_STORAGE);
+            statusMessage = getResources().getString(R.string.permission_error_write_storage);
         }
+
+    }
 
         void sendEmail() {
             Intent emailIntent = new Intent(Intent.ACTION_SEND);
@@ -225,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_SMS},
-                        PERMISSION_REQUEST_READ_CONTACTS);
+                        PERMISSION_REQUEST_READ_SMS);
                 statusMessage = getResources().getString(R.string.permission_error_sms);
             }
             return null;
