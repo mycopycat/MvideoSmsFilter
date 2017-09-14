@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 enum SortOrder { DATE, SUM }
+enum Shop {MVIDEO, ELDORADO}
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,11 +41,12 @@ public class MainActivity extends AppCompatActivity {
     TextView tvStatus;
     TextView tvSort;
 
-    RadioGroup radioGroup;
+    RadioGroup rgSort;
+    RadioGroup rgShop;
     ProgressBar progressBar;
 
     SortOrder sortOrder;
-
+    Shop shop;
 
     String fileName = "filtered.txt";
     ButtonAction outerAction;
@@ -60,11 +62,14 @@ public class MainActivity extends AppCompatActivity {
         tvSort = (TextView) findViewById(R.id.tvSort);
         tvStatus = (TextView) findViewById(R.id.tvStatus);
 
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        rgSort = (RadioGroup) findViewById(R.id.rgSort);
+        rgShop = (RadioGroup) findViewById(R.id.rgShop);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         outerAction = ButtonAction.SAVE;
         sortOrder = SortOrder.SUM;
+        shop = Shop.MVIDEO;
+
         initListeners();
     }
 
@@ -87,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 task.execute();
             }
         });
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        rgSort.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
                 switch (i) {
@@ -97,6 +102,26 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.rbSum:
                         sortOrder = SortOrder.SUM;
                         break;
+                    default:
+                        sortOrder = SortOrder.SUM;
+                        break;
+                }
+            }
+        });
+        rgShop.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                switch (i) {
+                    case R.id.rbMvideo:
+                        shop = Shop.MVIDEO;
+                        break;
+                    case R.id.rbEldo:
+                        shop = Shop.ELDORADO;
+                        break;
+                    default:
+                        shop = Shop.MVIDEO;
+                        break;
+
                 }
             }
         });
@@ -142,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         boolean parse() {
 
             Parser parser = new Parser(getApplicationContext());
-            messages = parser.parse("M.Video", sortOrder);
+            messages = parser.parse(shop, sortOrder);
             if (messages.isEmpty()) {
                 statusMessage = getResources().getString(R.string.status_empty);
                 return false;

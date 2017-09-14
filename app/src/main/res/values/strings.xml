@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">M.Video Saver</string>
+    <string name="app_name">Парсер магазинов</string>
     <string name="btn_save">Сохранить</string>
     <string name="et_address">Номер собеседника:</string>
     <string name="et_filter">Текст сообщения (RegEx):</string>
