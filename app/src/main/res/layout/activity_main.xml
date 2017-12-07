@@ -1,129 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.liarstudio.mvideosmsfilter.MainActivity">
 
-
-    <RadioGroup
-        android:id="@+id/rgShop"
-        android:layout_width="160dp"
-        android:layout_height="76dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/tvShop">
-
-        <RadioButton
-            android:id="@+id/rbMvideo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="М.Видео" />
-
-        <RadioButton
-            android:id="@+id/rbEldo"
-            android:layout_width="match_parent"
-            android:layout_height="43dp"
-            android:text="Эльдорадо" />
-
-    </RadioGroup>
-
-    <TextView
-        android:id="@+id/tvSort"
-        android:layout_width="214dp"
-        android:layout_height="27dp"
-        android:layout_marginLeft="8dp"
-        android:text="Сортировка"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/rgShop" />
-
-    <TextView
-        android:id="@+id/tvShop"
-        android:layout_width="214dp"
-        android:layout_height="27dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:text="Магазин"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnEmail"
-        android:layout_width="229dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="Отправить"
-        android:textColor="@android:color/white"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/btnSave" />
-
-    <Button
-        android:id="@+id/btnSave"
-        android:layout_width="229dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="13dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="Сохранить"
-        android:textColor="@android:color/white"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/rgSort" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="96dp"
-        android:layout_marginTop="8dp"
-        android:visibility="invisible"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/btnEmail" />
-
-    <TextView
-        android:id="@+id/tvStatus"
-        android:layout_width="186dp"
-        android:layout_height="37dp"
-        android:textAlignment="center"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar"
-        android:layout_marginLeft="35dp"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
-
-    <android.support.constraint.Guideline
-        android:layout_width="1dp"
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/guideline"
-        app:layout_constraintGuide_begin="62dp"
-        android:orientation="vertical" />
+        android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <RadioGroup
-        android:id="@+id/rgSort"
-        android:layout_width="160dp"
-        android:layout_height="76dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvSort">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways" />
 
-        <RadioButton
-            android:id="@+id/rbSum"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tablayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="По сумме" />
+            app:tabGravity="fill"
+            app:tabMode="fixed" />
 
-        <RadioButton
-            android:id="@+id/rbDate"
-            android:layout_width="match_parent"
-            android:layout_height="43dp"
-            android:text="По дате" />
+    </android.support.design.widget.AppBarLayout>
 
-    </RadioGroup>
-</android.support.constraint.ConstraintLayout>
+    <android.support.v4.view.ViewPager
+        android:layout_marginTop="120dp"
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</android.support.design.widget.CoordinatorLayout>

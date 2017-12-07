@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Парсер магазинов</string>
+    <string name="app_name">Помощник МВидео</string>
     <string name="btn_save">Сохранить</string>
     <string name="et_address">Номер собеседника:</string>
     <string name="et_filter">Текст сообщения (RegEx):</string>
@@ -7,7 +7,7 @@
     <string name="rb_all">Все</string>
     <string name="rb_inbox">Входящие</string>
     <string name="rb_output">Исходящие</string>
-    <string name="status_ok">Купоны сохранены в папку /Coupons/.</string>
+    <string name="status_ok">Купоны сохранены в папку Coupons.</string>
     <string name="status_io_error">Не удалось сохранить сообщения в памяти телефона.</string>
     <string name="status_empty">Сообщения не найдены</string>
     <string name="status_sent">Сообщения успешно отправлены</string>
@@ -16,5 +16,6 @@
 
     <string name="message_saved">Купоны благополучно сохранены в папке /Coupons/filtered.txt</string>
 
-
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

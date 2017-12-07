@@ -1,70 +1,65 @@
 package com.liarstudio.mvideosmsfilter;
 
-import android.content.ContentResolver;
-import android.content.Context;
-
-import android.database.Cursor;
-import android.net.Uri;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class Parser {
+public abstract  class Parser {
 
-    final Uri SMS_INBOX = Uri.parse("content://sms/inbox");
+    static String EOS = "\r\n";
+    static String EOSP = "\\r\\n";
 
-    final static String ELDO_NAME = "ELDORADO";
-    final static String MVIDEO_NAME = "M.Video";
+    public List<String> parse(SortOrder order, Task... task) {
 
-    final static String ELDO_SUM_PATTERN = "скидка - [0-9]{1,2} 000";
-    final static String MVIDEO_SUM_PATTERN = "скидку [0-9]{1,2} 000";
-
-    final static String ELDO_COUPON_PATTERN = "[0-9]{13}";
-    final static String MVIDEO_COUPON_PATTERN = "[0-9]{15}";
-
-    private Context context;
-
-
-    public Parser(Context context) {
-        this.context = context;
-    }
-
-    public List<String> parse(Shop shopToParse, SortOrder order) {
-
-
-        String shopName = shopToParse == Shop.MVIDEO ?
-                MVIDEO_NAME : ELDO_NAME;
-        String[] columnNames = {"_id", "body", "address", "date"};
-        ContentResolver cr = context.getContentResolver();
-        Cursor cursor = cr.query(SMS_INBOX, columnNames, "address='" + shopName + "'", null, "date desc");//, null, null);
-
-        Pattern patternSum = Pattern.compile(shopToParse == Shop.MVIDEO ?
-                                                MVIDEO_SUM_PATTERN : ELDO_SUM_PATTERN);
-        Pattern patternCode = Pattern.compile(shopToParse == Shop.MVIDEO ?
-                MVIDEO_COUPON_PATTERN : ELDO_COUPON_PATTERN);
-
-        Matcher matcherSum;
-        Matcher matcherCode;
-
-
-        List<String> coupons = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            String current = cursor.getString(cursor.getColumnIndexOrThrow("body"));
-            matcherSum = patternSum.matcher(current);
-            matcherCode = patternCode.matcher(current);
-            if (matcherSum.find() && matcherCode.find())
-                coupons.add(calculatePrice(matcherSum.group()) + ": " + matcherCode.group() + "\r\n");
+        RegexPattern[] patterns = new RegexPattern[task.length];
+        for (int i = 0; i < patterns.length; i++) {
+            patterns[i] = new RegexPattern(task[i]);
         }
-        if (!coupons.isEmpty() && order == SortOrder.SUM)
-            return sortBySum(coupons);
+        List<String> coupons = parseTemplate(patterns);
+        //if (task.length == 1 &&  order == SortOrder.SUM &&
+        //        (task[0] == Task.SMS || task[0] == Task.Philips))
+
+        if (order== SortOrder.SUM) {
+            return sort(coupons);
+        }
         return coupons;
+
+        /*switch (task) {
+            case SMS:
+                coupons = parseTemplate(
+                        RegexPattern.SMS_COUPON_PATTERN,
+                        RegexPattern.AMOUNT_PATTERN,
+                        RegexPattern.SUM_PATTERN);
+                if (!coupons.isEmpty() && order == SortOrder.SUM)
+                    return sort(coupons);
+                break;
+            case Philips:
+                coupons = parseTemplate(
+                        RegexPattern.SMS_COUPON_PATTERN,
+                        RegexPattern.AMOUNT_PATTERN,
+                        RegexPattern.SUM_PATTERN,
+                        RegexPattern.PHILIPS_COUPON_CONDITION
+                );
+                if (!coupons.isEmpty() && order == SortOrder.SUM)
+                    return sort(coupons);
+                break;
+            case PickUp:
+                coupons = parseTemplate(RegexPattern.PICKUP_COUPON_PATTERN);
+                break;
+            default:
+                coupons = parseTemplate(RegexPattern.SORRY_COUPON_PATTERN);
+                break;
+        }
+        */
     }
 
+    abstract List<String> parseTemplate(RegexPattern... patterns);
+    /*abstract List<String> parseTemplate(String code, String amount, String sum,
+                                        String condition);
+*/
 
-    public List<String> sortBySum(List<String> coupons) {
 
+
+    public List<String> sort(List<String> coupons) {
         for (int i = 0; i < coupons.size(); i++) {
             for (int j = i + 1; j < coupons.size(); j++)
                 if (extractPrice(coupons.get(i)) > extractPrice(coupons.get(j))) {
@@ -77,21 +72,18 @@ public class Parser {
     }
 
 
-    private Integer calculatePrice(String coupon)
+    protected Long calculatePrice(String extracted)
     {
-        Pattern patternPrice = Pattern.compile("[0-9]{1,2} 0{3}");
-        Matcher matcherPrice = patternPrice.matcher(coupon);
+        java.util.regex.Pattern patternPrice = java.util.regex.Pattern.compile("[0-9]{4,5}");
+        Matcher matcherPrice = patternPrice.matcher(extracted);
         matcherPrice.find();
 
         String correct_number = matcherPrice.group().replace(" ", "");
-        return Integer.parseInt(correct_number);
+        return Long.parseLong(correct_number);
     }
 
-    private Integer extractPrice(String coupon) {
-        String number = coupon.split(":")[0];
-        return Integer.parseInt(number);
+    private Long extractPrice(String coupon) {
+        String number = coupon.split("/")[0].replaceAll(EOSP, "");
+        return Long.parseLong(number);
     }
-
-
-
 }
