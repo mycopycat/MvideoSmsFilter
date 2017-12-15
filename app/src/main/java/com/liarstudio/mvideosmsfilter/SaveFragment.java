@@ -13,6 +13,7 @@ import android.os.SystemClock;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -29,7 +31,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class SaveFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
@@ -37,6 +40,8 @@ public class SaveFragment extends Fragment implements CompoundButton.OnCheckedCh
 
     private static final int PERMISSION_REQUEST_READ_SMS = 100;
     private static final int PERMISSION_REQUEST_WRITE_STORAGE = 101;
+
+    final String CLASS_NAME = getClass().getSimpleName();
 
     static final int REQUEST_CODE_SEND = 3443;
 
@@ -49,11 +54,14 @@ public class SaveFragment extends Fragment implements CompoundButton.OnCheckedCh
     TextView tvStatus;
     TextView tvSort;
 
+    CheckBox cbPickDate;
+    DatePicker datePicker;
     ProgressBar progressBar;
 
     RadioGroup rgSort;
 
     View toastView;
+    Toast toastResult;
 
     SortOrder sortOrder;
     boolean[] tasks;
@@ -96,23 +104,40 @@ public class SaveFragment extends Fragment implements CompoundButton.OnCheckedCh
         CheckBox cbPickup = view.findViewById(R.id.cb_pickup);
         cbSms.setOnCheckedChangeListener(this); cbPhilips.setOnCheckedChangeListener(this);
         cbPickup.setOnCheckedChangeListener(this); cbSorry.setOnCheckedChangeListener(this);
+        cbSms.setChecked(true);
 
+        cbPickDate = view.findViewById(R.id.cb_pick_date);
+        cbPickDate.setOnCheckedChangeListener(this);
+
+        datePicker = view.findViewById(R.id.date_picker);
 
         initListeners();
 
         return view;
     }
 
-    void showToast(String message) {
+    @Override
+    public void onPause() {
+        super.onPause();
 
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(CLASS_NAME, "onResume");
+        toastResult = new Toast(getActivity());
+        super.onResume();
+
+    }
+
+    void showToast(String message) {
         TextView text = toastView.findViewById(R.id.toast_text_view);
         text.setText(message);
 
-        Toast toast = new Toast(getActivity());
-        toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(toastView);
-        toast.show();
+        toastResult.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+        toastResult.setDuration(Toast.LENGTH_SHORT);
+        toastResult.setView(toastView);
+        toastResult.show();
     }
 
 
@@ -178,8 +203,10 @@ public class SaveFragment extends Fragment implements CompoundButton.OnCheckedCh
                 tasks[3] = b;
                 break;
             default:
-                break;
-
+                if (b)
+                    datePicker.setVisibility(View.VISIBLE);
+                else
+                    datePicker.setVisibility(View.GONE);
         }
     }
 
@@ -189,21 +216,32 @@ public class SaveFragment extends Fragment implements CompoundButton.OnCheckedCh
         SortOrder innerSortOrder;
         String statusMessage;
         List<Task> innerTasks;
+        Calendar date;
 
         @Override
         protected void onPreExecute() {
             innerSortOrder = sortOrder;
 
             messages = new ArrayList<>();
-            tvStatus.setText("Формируем список шаблонов...");
 
             innerTasks = new ArrayList<>();
             for (int i = 0; i < tasks.length; i++) {
                 if (tasks[i])
                     innerTasks.add(Task.values()[i]);
             }
+            if (cbPickDate.isChecked()) {
+                date = new GregorianCalendar(
+                        datePicker.getYear(),
+                        datePicker.getMonth(),
+                        datePicker.getDayOfMonth()
+                );
 
+            }
+
+
+            tvStatus.setText("Формируем список шаблонов...");
             tvStatus.setVisibility(View.VISIBLE);
+            tvStatus.requestFocus();
         }
 
         @Override
@@ -217,7 +255,7 @@ public class SaveFragment extends Fragment implements CompoundButton.OnCheckedCh
         boolean parse() {
             publishProgress("Парсинг сообщений...");
             Parser parser = new AndroidParser(getActivity());
-            messages = parser.parse(sortOrder, innerTasks.toArray(new Task[innerTasks.size()]));
+            messages = parser.parse(sortOrder, date, innerTasks.toArray(new Task[innerTasks.size()]));
             if (messages.isEmpty()) {
                 statusMessage = getResources().getString(R.string.status_empty);
                 return false;
@@ -249,14 +287,21 @@ public class SaveFragment extends Fragment implements CompoundButton.OnCheckedCh
         void sendEmail() {
             publishProgress("Подготовка почтового клиента...");
             Intent emailIntent = new Intent(Intent.ACTION_SEND);
-            emailIntent.setType("message/rfc822");
+            /*emailIntent.setType("message/rfc822");
             StringBuilder messageList = new StringBuilder();
             for (String message : messages) {
                 messageList.append(message);
             }
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, messageList.toString());
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, messageList.toString()); */
+            emailIntent.setType("text/*");
+            StringBuilder messageList = new StringBuilder();
+            for (String message : messages) {
+                messageList.append(message);
+            }
+            emailIntent.putExtra(Intent.EXTRA_TEXT, messageList.toString());
+
             try {
-                startActivityForResult(Intent.createChooser(emailIntent, "Послать купоны..."), REQUEST_CODE_SEND);
+                startActivity(Intent.createChooser(emailIntent, "Послать купоны..."));
             } catch (ActivityNotFoundException anfe) {
                 statusMessage = "У вас не установлены почтовые клиенты.";
             }
@@ -289,17 +334,6 @@ public class SaveFragment extends Fragment implements CompoundButton.OnCheckedCh
         }*/
     }
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        /*if (context instanceof OnFragmentInteractionListener) {
-            //mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

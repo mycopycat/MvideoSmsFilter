@@ -6,13 +6,18 @@ package com.liarstudio.mvideosmsfilter;
 enum Task { SMS, Philips, Sorry, PickUp }
 
 public class RegexPattern {
-    public static String AMOUNT_PATTERN = "скидку [0-9]{1,2}000";
+    public static String AMOUNT_PATTERN = "скидку[ ]{1,2}[0-9]{1,2}000";
     public static String SUM_PATTERN = "от [0-9]{4,5}";
 
     public static String SMS_COUPON_PATTERN = "([0-9]{15})";
     public static String SORRY_COUPON_PATTERN = "7[0-9]{14}";
     public static String PICKUP_COUPON_PATTERN = "9[0-9]{14}";
     public static String PHILIPS_COUPON_CONDITION = "Philips"; //"(?=.*[0-9]{15})(?=.*Philips)";
+
+    public static String REFUSE_2420 = "Вы отказались";
+    public static String NOT_ACCEPTED_2420 = "Вы не подтвердили";
+    public static String CONFIRMATION_2420_PATTERN = "тправьте ";
+
 
     public Task getTask() {
         return task;

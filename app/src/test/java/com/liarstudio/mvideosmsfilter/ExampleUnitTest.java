@@ -25,4 +25,28 @@ public class ExampleUnitTest {
         }
         assertEquals(res, "");
     }
+
+
+    @Test
+    public void extractMatch() {
+        String body = "Отправьте 1 в ответном смс";
+        String res = extractConfirmation(body);
+
+        assertEquals(res.equalsIgnoreCase("1"), true);
+    }
+
+    String extractConfirmation(String message) {
+
+        int i = message.indexOf(RegexPattern.CONFIRMATION_2420_PATTERN);
+        if (i >= 0) {
+            i += RegexPattern.CONFIRMATION_2420_PATTERN.length();
+            String confirmation_string = "";
+            while (i < message.length() && message.charAt(i) != ' ') {
+                confirmation_string += message.charAt(i);
+                i++;
+            }
+            return confirmation_string;
+        }
+        return null;
+    }
 }

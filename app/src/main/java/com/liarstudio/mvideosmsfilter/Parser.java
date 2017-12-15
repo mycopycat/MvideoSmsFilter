@@ -1,5 +1,6 @@
 package com.liarstudio.mvideosmsfilter;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -8,13 +9,15 @@ public abstract  class Parser {
     static String EOS = "\r\n";
     static String EOSP = "\\r\\n";
 
-    public List<String> parse(SortOrder order, Task... task) {
+    public List<String> parse(SortOrder order, Calendar date, Task... task) {
+
+
 
         RegexPattern[] patterns = new RegexPattern[task.length];
         for (int i = 0; i < patterns.length; i++) {
             patterns[i] = new RegexPattern(task[i]);
         }
-        List<String> coupons = parseTemplate(patterns);
+        List<String> coupons = parseTemplate(date, patterns);
         //if (task.length == 1 &&  order == SortOrder.SUM &&
         //        (task[0] == Task.SMS || task[0] == Task.Philips))
 
@@ -52,7 +55,10 @@ public abstract  class Parser {
         */
     }
 
-    abstract List<String> parseTemplate(RegexPattern... patterns);
+
+
+
+    abstract List<String> parseTemplate(Calendar date, RegexPattern... patterns);
     /*abstract List<String> parseTemplate(String code, String amount, String sum,
                                         String condition);
 */
@@ -86,4 +92,19 @@ public abstract  class Parser {
         String number = coupon.split("/")[0].replaceAll(EOSP, "");
         return Long.parseLong(number);
     }
+    public static String extractConfirmation(String message) {
+
+        int i = message.indexOf(RegexPattern.CONFIRMATION_2420_PATTERN);
+        if (i >= 0) {
+            i += RegexPattern.CONFIRMATION_2420_PATTERN.length();
+            String confirmation_string = "";
+            while (i < message.length() && message.charAt(i) != ' ') {
+                confirmation_string += message.charAt(i);
+                i++;
+            }
+            return confirmation_string;
+        }
+        return null;
+    }
+
 }

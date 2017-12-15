@@ -6,10 +6,10 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 public class AndroidParser extends Parser {
 
     final Uri SMS_INBOX = Uri.parse("content://sms/inbox");
@@ -46,17 +46,29 @@ public class AndroidParser extends Parser {
 */
 
     @Override
-    List<String> parseTemplate(RegexPattern... patterns) {
+    List<String> parseTemplate(Calendar date, RegexPattern... patterns) {
 
         List<String> coupons = new ArrayList<>();
 
-        String[] columnNames = {"_id", "body", "address", "date"};
         ContentResolver cr = context.getContentResolver();
-        Cursor cursor = cr.query(SMS_INBOX, columnNames, "address='" + SMS_NAME + "'", null, "date asc");//, null, null);
+
+        String[] columnNames = {"_id", "body", "address", "date"};
+        String selection;
+        String[] selectionArgs;
+        String sortOrder = "date asc";
+        if ( date==null ) {
+            selection = "address=?";
+            selectionArgs = new String[]{SMS_NAME};
+        } else {
+            selection = "address=? AND date>?";
+            selectionArgs = new String[]{SMS_NAME, Long.toString(date.getTimeInMillis())};
+        }
+
+        Cursor cursor = cr.query(SMS_INBOX, columnNames, selection, selectionArgs, sortOrder);//, null, null);
 
         while (cursor.moveToNext()) {
             String current = cursor.getString(cursor.getColumnIndexOrThrow("body"));
-            String coupon = null;
+            String coupon;
             for (RegexPattern pattern : patterns) {
                 coupon = parseTemplateCoupon(current, pattern);
                 if (coupon != null)
