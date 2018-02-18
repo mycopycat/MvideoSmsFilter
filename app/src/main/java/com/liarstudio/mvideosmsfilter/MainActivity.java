@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-enum SortOrder { DATE, SUM }
-
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;

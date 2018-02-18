@@ -2,10 +2,8 @@ package com.liarstudio.mvideosmsfilter;
 
 import android.Manifest;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,6 +24,11 @@ import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.liarstudio.mvideosmsfilter.Parsers.AndroidParser;
+import com.liarstudio.mvideosmsfilter.Parsers.Parser;
+import com.liarstudio.mvideosmsfilter.Parsers.SortOrder;
+import com.liarstudio.mvideosmsfilter.Parsers.Task;
 
 import java.io.File;
 import java.io.FileWriter;

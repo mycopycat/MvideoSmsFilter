@@ -1,5 +1,7 @@
 package com.liarstudio.mvideosmsfilter;
 
+import com.liarstudio.mvideosmsfilter.Parsers.RegexPattern;
+
 import org.junit.Test;
 
 import java.util.regex.Matcher;

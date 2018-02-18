@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MvideoSmsFilter2.iml" filepath="$PROJECT_DIR$/MvideoSmsFilter2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MvideoSmsFilter.iml" filepath="$PROJECT_DIR$/MvideoSmsFilter.iml" />
+      <module fileurl="file://C:\Users\mider\StudioProjects\MvideoSmsFilter\MvideoSmsFilter2.iml" filepath="C:\Users\mider\StudioProjects\MvideoSmsFilter\MvideoSmsFilter2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

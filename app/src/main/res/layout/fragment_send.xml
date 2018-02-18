@@ -32,7 +32,7 @@
             android:shadowColor="@color/colorPrimary"
             android:textColorHighlight="@color/colorPrimary"
             android:textColorLink="@color/colorPrimary"
-            android:text="2420" />
+            android:text="3443" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -50,20 +50,37 @@
             android:layout_gravity="center_horizontal"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="mvideo darit" />
+            android:text="mvideo sale99" />
     </android.support.design.widget.TextInputLayout>
 
+        <RadioGroup
+            android:id="@+id/rg_sim"
+            android:layout_width="250dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center">
 
+            <RadioButton
+                android:id="@+id/rb_first"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Отправить с SIM1" />
+            <RadioButton
+                android:id="@+id/rb_second"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Отправить с SIM2" />
 
-    <CheckBox
-        android:id="@+id/cb_dual_sim"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:layout_gravity="center"
-        android:text="Со всех сим-карт" />
+            <RadioButton
+                android:id="@+id/rb_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Отправить с обеих SIM" />
 
-    <Button
+        </RadioGroup>
+
+        <Button
         android:id="@+id/btn_send"
         android:layout_width="229dp"
         android:layout_height="48dp"
